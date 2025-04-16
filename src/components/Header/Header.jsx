@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 import styles from './Header.module.scss';
 import Hamburguer from '../Logos/Hamburguer';
 
-function Header({ scrollCallback, showAd, showExpandedLogo }) {
+function Header({ showAd, showExpandedLogo }) {
     const [isSticky, setIsSticky] = useState(false);
     const [isHidden, setIsHidden] = useState(false);
     const [headerTransition, setIsHeaderTransition] = useState(true);
@@ -16,56 +16,7 @@ function Header({ scrollCallback, showAd, showExpandedLogo }) {
     const headerRef = useRef(null);
     const mainContentRef = useRef(null);
 
-    useEffect(() => {
-        const calculateScrollOffset = () => {
-            const adOffset = showAd ? 100 : 280; // 100 (ad) or 280 (no ad)
-            const hiddenPosition = 250 + adOffset; // 350 (ad) or 530 (no ad)
-            const stickyPosition = hiddenPosition + 60; // scroll offset where header is sticky
-                                                        // 410(ad) or 590(no ad)
-            return {
-                hiddenPosition,
-                stickyPosition,
-            };
-        };
-
-        const handleScroll = () => {
-            const { stickyPosition, hiddenPosition } = calculateScrollOffset(); 
-            // {stickyPosition: 590, hiddenPosition: 530}
-            const currentScroll = window.pageYOffset;
-            const isHeaderSticky = currentScroll > stickyPosition; // >590
-            const isHeaderHidden = // 530 < currentScroll < 590
-                currentScroll < stickyPosition && 
-                currentScroll > hiddenPosition;
-            const scrollDelta = currentScroll - prevScroll;
-            const isScrollingDown = scrollDelta > 0; // true (scroll down)  |  false (scroll up)
-            if (isScrollingDown && currentScroll > hiddenPosition) { // ⬇️ & currentScroll > 530
-                setIsHeaderTransition(true);
-            }
-            if (!isScrollingDown && currentScroll < hiddenPosition) { // ⬆️ & currentScroll < 530
-                setIsHeaderTransition(false);
-            }
-            setIsHidden(isHeaderHidden);  // 530 < currentScroll < 590
-            setIsSticky(isHeaderSticky); //  currentScroll > 590
-            setPrevScroll(currentScroll);
-        };
-
-        window.addEventListener('scroll', handleScroll);
-        if (scrollCallback) {
-            window.addEventListener('scroll', () => {
-                const { stickyPosition } = calculateScrollOffset();
-                return scrollCallback(window.pageYOffset > stickyPosition);
-            });
-        }
-
-        return () => {
-            window.removeEventListener('scroll', handleScroll);
-            window.removeEventListener('scroll', scrollCallback);
-        };
-    }, [scrollCallback, showAd, prevScroll]);
-
     const headerWithClasses = classNames(styles.header, {
-        [styles.sticky]: isSticky,
-        [styles.hidden]: isHidden,
         [styles['no-transition']]: !headerTransition,
         [styles['expanded-logo']]: showExpandedLogo,
     });
