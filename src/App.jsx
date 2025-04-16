@@ -1,8 +1,8 @@
+import Article from "./components/Article/Article";
+
 function App() {
 	return (
-		<>
-			<h1>React app</h1>
-		</>
+		<Article/>
 	);
 }
 
