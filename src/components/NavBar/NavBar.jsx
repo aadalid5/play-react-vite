@@ -1,7 +1,7 @@
 import React from 'react';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import styles from './NavBar.module.scss';
+import styles from './Navbar.module.scss';
 
 function NavBar({ className }) {
     const withClasses = classNames({
